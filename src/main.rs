@@ -22,13 +22,21 @@ register_plugin!(State);
 fn initialize(params: InitializeParams) -> Result<()> {
     let document_selector: DocumentSelector = vec![DocumentFilter {
         // lsp language id
-        language: Some(String::from("language_id")),
+        language: Some(String::from("javascript")),
         // glob pattern
-        pattern: Some(String::from("**/*.{ext1,ext2}")),
+        pattern: Some(String::from("**/*.{js,jsx}")),
+        // like file:
+        scheme: None,
+    },
+    DocumentFilter {
+        // lsp language id
+        language: Some(String::from("typescript")),
+        // glob pattern
+        pattern: Some(String::from("**/*.{ts,tsx}")),
         // like file:
         scheme: None,
     }];
-    let mut server_args = vec![];
+    let mut server_args = vec![string!("lsp")];
 
     // Check for user specified LSP server path
     // ```
@@ -97,10 +105,10 @@ fn initialize(params: InitializeParams) -> Result<()> {
 
     // Plugin working directory
     let volt_uri = VoltEnvironment::uri()?;
-    let server_uri = Url::parse(&volt_uri)?.join("[filename]")?;
+    // let server_uri = Url::parse(&volt_uri)?.join("[filename]")?;
 
     // if you want to use server from PATH
-    // let server_uri = Url::parse(&format!("urn:{filename}"))?;
+    let server_uri = Url::parse(&format!("urn:deno"))?;
 
     // Available language IDs
     // https://github.com/lapce/lapce/blob/HEAD/lapce-proxy/src/buffer.rs#L173
